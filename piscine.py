@@ -1,105 +1,104 @@
-liste = [("Pierre","Dos",10),("Paul","Brasse",13),("Léa","Crawl",6), ("Léa","Brasse",8) ]
-commande = ''
+liste = [("Pierre", "Dos", 10), ("Paul", "Brasse", 13), ("Léa", "Crawl", 6), ("Léa", "Brasse", 8)]
+commandes = {
+    "1": "ajout_performance",
+    "2": "ajout_individu",
+    "3": "ajout_nage",
+    "4": "liste_performances",
+    "5": "liste_nageur",
+    "6": "liste_nage",
+    "7": "sauvegarde",
+    "8": "chargement",
+    "0": "quitter"
+}
 
-def cmd_ajout(liste):
-    """Ajoute un évènement à la liste"""
-    a = input("Qui nage ? ")
-    b = input("quelle nage ? ")
-    c = input("combien de longueur ? ")
-    liste.append((a,b,c))
+def ajout_performance(liste):
+    """Ajoute une performance à la liste"""
+    nom = input("Nom du nageur : ")
+    nage = input("Type de nage : ")
+    longueur = int(input("Nombre de longueurs : "))
+    liste.append((nom, nage, longueur))
 
-def cmd_liste(liste):
+def ajout_individu(liste):
+    """Ajoute un individu sans performance"""
+    nom = input("Nom du nageur : ")
+    liste.append((nom, "", 0))
+
+def ajout_nage():
+    """Ajoute une nouvelle nage"""
+    nage = input("Nom de la nouvelle nage : ")
+    print(f"La nage {nage} a été ajoutée.")
+
+def liste_performances(liste):
     """Affiche toutes les performances des nageurs"""
-    print("Prénom      |  nage   |  longueur")
+    print("Prénom      |  Nage   |  Longueur")
     print("---------------------------------")
     for elt in liste:
         print(f" {elt[0]:11}| {elt[1]:8}|  {elt[2]}")
 
-def cmd_nageur(liste):
+def liste_nageur(liste):
     """Affiche toutes les performances d'un nageur"""
     tmp = input("Quel nageur ? ")
-    print("Performances de ", tmp)
-    print("  nage   |  longueur")
+    print(f"Performances de {tmp}")
+    print("  Nage   |  Longueur")
     print("--------------------")
     for elt in liste:
-        if elt[0]== tmp:
+        if elt[0] == tmp:
             print(f" {elt[1]:8}|  {elt[2]}")
 
-def cmd_nage(liste):
-    """Affiche toutes les performances suivant une nage donnée"""
-    tmp = input("Quel nage ? ")
-    print("Nage ", tmp)
-    print(" Nageur     |  longueur")
+def liste_nage(liste):
+    """Affiche tous les nageurs pratiquant une nage"""
+    tmp = input("Quelle nage ? ")
+    print(f"Nage : {tmp}")
+    print(" Nageur     |  Longueur")
     print("------------------------")
     for elt in liste:
-        if elt[1]== tmp:
+        if elt[1] == tmp:
             print(f" {elt[0]:11}|  {elt[2]}")
 
-def cmd_exit(liste):
-    tmp = input("En êtes-vous sûr ? (o)ui/(n)on ")
-    if tmp == 'o':
-        cmd_save(liste, 'save.backup')
-        return False
+def sauvegarde(liste, filename="save.csv"):
+    """Sauvegarde la BDD"""
+    with open(filename, 'w') as fichier:
+        for elt in liste:
+            fichier.write(f"{elt[0]},{elt[1]},{elt[2]}\n")
+
+def chargement(liste, filename="save.csv"):
+    """Charge la BDD"""
+    with open(filename, 'r') as fichier:
+        for line in fichier:
+            line = line.strip()
+            if line and line[0] != '#':
+                tmp = line.split(',')
+                liste.append((tmp[0], tmp[1], int(tmp[2])))
+
+def quitter():
+    """Quitte le logiciel"""
+    confirmation = input("En êtes-vous sûr ? (o)ui/(n)on : ")
+    return confirmation.lower() != 'o'
+
+while True:
+    print("\nMenu :")
+    for key, value in commandes.items():
+        print(f"{key} -> {value.replace('_', ' ')}")
+    choix = input("Votre choix : ")
+    
+    if choix == "1":
+        ajout_performance(liste)
+    elif choix == "2":
+        ajout_individu(liste)
+    elif choix == "3":
+        ajout_nage()
+    elif choix == "4":
+        liste_performances(liste)
+    elif choix == "5":
+        liste_nageur(liste)
+    elif choix == "6":
+        liste_nage(liste)
+    elif choix == "7":
+        sauvegarde(liste)
+    elif choix == "8":
+        chargement(liste)
+    elif choix == "0":
+        if quitter():
+            break
     else:
-        return True
-
-def cmd_save(liste, filename):
-    '''sauvegarde la BDD'''
-    fichier = open(filename, 'w')
-    for elt in liste:
-        fichier.write(elt[0]+','+elt[1]+','+str(elt[2])+"\n")
-    fichier.close()
-
-def cmd_load(liste, filename):
-    'charge la BDD'
-    fichier = open(filename, 'r')
-    for line in fichier:
-        line.strip()
-        if line[-1] == '\n':
-            line = line[:-1]
-        if line[0]=='#':
-            continue
-        tmp = line.split(',')
-        liste.append(tuple(tmp))
-    fichier.close()
-
-
-def get_cmd():
-    '''Traitement de la commande d'entrée'''
-    msg = input("Que faut-il faire ? ")
-    msg = msg.lower()
-    return msg
-
-isAlive = True
-while isAlive:
-    commande = get_cmd()
-
-    if commande == 'ajout':
-        cmd_ajout(liste)
-        continue
-   
-    if commande == 'liste':
-        cmd_liste(liste)
-        continue
-
-    if commande == 'nageur':
-        cmd_nageur(liste)
-        continue
-
-    if commande == 'nage':
-        cmd_nage(liste)
-        continue
-
-    if commande == 'save':
-        cmd_save(liste, 'save.csv')
-        continue
-
-    if commande == 'load':
-        cmd_load(liste, 'save.csv')
-        continue
-
-    if commande == 'exit':
-        isAlive = cmd_exit(liste)
-        continue
-
-    print(f"Commande {commande} inconnue")
+        print("Commande inconnue, veuillez réessayer.")
