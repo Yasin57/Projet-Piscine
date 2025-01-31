@@ -1,4 +1,5 @@
 from datetime import datetime
+from get_value import get_int_value
 
 liste = [("Pierre", "Dos", 10, "2024-05-11"), ("Paul", "Brasse", 13, "2024-05-12"), ("Léa", "Crawl", 6, "2024-05-11"), ("Léa", "Brasse", 8, "2024-05-13")]
 commandes = {
@@ -18,7 +19,7 @@ def ajout_performance(liste):
     """Ajoute une performance à la liste"""
     nom = input("Nom du nageur : ")
     nage = input("Type de nage : ")
-    longueur = int(input("Nombre de longueurs : "))
+    longueur = get_int_value()
     date = input("Date (YYYY-MM-DD) : ")
     liste.append((nom, nage, longueur, date))
 
@@ -57,7 +58,7 @@ def liste_nage(liste):
     print("--------------------------------")
     for elt in liste:
         if elt[1] == tmp:
-            print(f" {elt[0]:11}|  {elt[2]:8}| {elt[3]}")
+            print(f" {elt[0]:11}| {elt[2]:8}| {elt[3]}")
 
 def liste_date(liste):
     """Affiche toutes les performances enregistrées à une date donnée"""
