@@ -41,14 +41,23 @@ def liste_performances(liste):
         print(f" {elt[0]:11}| {elt[1]:8}|  {elt[2]:8}| {elt[3]}")
 
 def liste_nageur(liste):
-    """Affiche toutes les performances d'un nageur"""
+    """Affiche toutes les performances d'un nageur et leurs statistiques"""
     tmp = input("Quel nageur ? ")
-    print(f"Performances de {tmp}")
-    print("  Nage   |  Longueur | Date")
-    print("--------------------------------")
-    for elt in liste:
-        if elt[0] == tmp:
-            print(f" {elt[1]:8}|  {elt[2]:8}| {elt[3]}")
+    performances = [elt[2] for elt in liste if elt[0] == tmp]
+    
+    if performances:
+        print(f"Performances de {tmp}")
+        print("  Nage   |  Longueur | Date")
+        print("--------------------------------")
+        for elt in liste:
+            if elt[0] == tmp:
+                print(f" {elt[1]:8}|  {elt[2]:8}| {elt[3]}")
+        print("--------------------------------")
+        print(f"Minimum : {min(performances)}")
+        print(f"Maximum : {max(performances)}")
+        print(f"Moyenne : {sum(performances) / len(performances):.1f}")
+    else:
+        print("Aucune performance trouvée pour ce nageur.")
 
 def liste_nage(liste):
     """Affiche tous les nageurs pratiquant une nage"""
